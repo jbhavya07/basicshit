@@ -1,4 +1,10 @@
-import { TestCase, TestResult, FullResult, FullConfig, Reporter } from '@playwright/test/reporter';
+import {
+  TestCase,
+  TestResult,
+  FullResult,
+  FullConfig,
+  Reporter,
+} from '@playwright/test/reporter';
 import fs from 'fs';
 import path from 'path';
 
@@ -36,16 +42,25 @@ class ModuleSummaryReporter implements Reporter {
       testName: test.title,
       status: result.status,
       duration: result.duration,
-      errorMessage: result.status === 'failed' && result.errors.length > 0 ? result.errors[0].message : undefined,
-      screenshotPath: result.attachments.filter(a => a.name === 'screenshot' && a.path)[0]?.path
+      errorMessage:
+        result.status === 'failed' && result.errors.length > 0
+          ? result.errors[0].message
+          : undefined,
+      screenshotPath: result.attachments.filter(
+        a => a.name === 'screenshot' && a.path
+      )[0]?.path,
     });
   }
 
   onEnd(result: FullResult) {
-    const header = 'TestSuite,TestName,Status,Duration (ms),Error Message,Screenshot Path\n';
-    const rows = this.results.map(r =>
-      `${this.csvEscape(r.testSuite)},${this.csvEscape(r.testName)},${r.status},${r.duration},${this.csvEscape(r.errorMessage || '')},${this.csvEscape(r.screenshotPath || '')}`
-    ).join('\n');
+    const header =
+      'TestSuite,TestName,Status,Duration (ms),Error Message,Screenshot Path\n';
+    const rows = this.results
+      .map(
+        r =>
+          `${this.csvEscape(r.testSuite)},${this.csvEscape(r.testName)},${r.status},${r.duration},${this.csvEscape(r.errorMessage || '')},${this.csvEscape(r.screenshotPath || '')}`
+      )
+      .join('\n');
 
     fs.writeFileSync(this.outputFile, header + rows);
     console.log(`\nModule Summary Report saved to: ${this.outputFile}`);
@@ -55,7 +70,11 @@ class ModuleSummaryReporter implements Reporter {
     if (!value) return '';
     // If the value contains a comma, double quote, or newline, enclose it in double quotes
     // and escape any existing double quotes by doubling them.
-    if (value.indexOf(',') !== -1 || value.indexOf('"') !== -1 || value.indexOf('\n') !== -1) {
+    if (
+      value.indexOf(',') !== -1 ||
+      value.indexOf('"') !== -1 ||
+      value.indexOf('\n') !== -1
+    ) {
       return `"${value.replace(/"/g, '""')}"`;
     }
     return value;
