@@ -4,19 +4,34 @@
     "es2021": true,
     "node": true
   },
-  "extends": ["eslint:recommended"],
+  "extends": [
+    "eslint:recommended",
+    // Add recommended TypeScript ESLint configurations
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser", // Specify the TypeScript parser
   "parserOptions": {
     "ecmaVersion": "latest",
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": "./tsconfig.json" // Important for type-aware linting rules
   },
+  "plugins": [
+    "@typescript-eslint" // Add the TypeScript plugin
+  ],
   "rules": {
+    // Override or add specific rules here
     "no-console": "error",
     "no-debugger": "error",
-    "no-unused-vars": "error",
+    "no-unused-vars": "off", // Turn off ESLint's default, use TypeScript ESLint's
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }], // Use TS version with option
     "prefer-const": "error",
     "no-var": "error",
     "eqeqeq": "error",
     "curly": "error"
+    // You might also want to disable some other base ESLint rules
+    // that are better handled by TypeScript ESLint for better integration.
+    // E.g., "@typescript-eslint/explicit-module-boundary-types": "off",
+    // "@typescript-eslint/no-explicit-any": "off" // If you allow 'any'
   },
   "ignorePatterns": [
     "node_modules/",
@@ -26,6 +41,8 @@
     "*.min.js",
     "reports/",
     "screenshots/",
-    "test-results/"
+    "test-results/",
+    ".eslintrc.json", // Good to keep this in .prettierignore too
+    "testing/playwright/results/" // Add this if not already there, consistent with outputDir
   ]
 }
