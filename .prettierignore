@@ -13,3 +13,4 @@ yarn.lock
 reports/
 screenshots/
 test-results/
+.eslintrc.json
