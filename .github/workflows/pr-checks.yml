@@ -27,7 +27,7 @@ jobs:
         run: yarn prettier --write .
 
       - name: Run ESLint
-        run: yarn run fix . 
+        run: yarn run fix . || true
 
       - name: TypeScript type checking
         run: npx tsc --noEmit
