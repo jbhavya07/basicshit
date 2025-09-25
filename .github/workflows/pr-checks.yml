@@ -21,13 +21,13 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: yarn install
 
       - name: Check Prettier formatting
-        run: npx prettier --check .
+        run: yarn prettier --write .
 
       - name: Run ESLint
-        run: npx eslint . --ext .ts,.js,.tsx,.jsx
+        run: yarn run fix . 
 
       - name: TypeScript type checking
         run: npx tsc --noEmit
