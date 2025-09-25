@@ -1,0 +1,49 @@
+name: PR Code Quality Checks
+
+on:
+  pull_request:
+    branches: [main, updates_branch]
+  push:
+    branches: [main, updates_branch]
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Check Prettier formatting
+        run: yarn prettier --write .
+
+      - name: Run ESLint
+        run: yarn run fix . || true
+
+      - name: TypeScript type checking
+        run: npx tsc --noEmit
+
+      - name: Check for TODO/FIXME comments
+        run: |
+          echo "Checking for TODO/FIXME comments..."
+          if grep -r "TODO\|FIXME\|HACK" --include="*.ts" --include="*.js" --include="*.tsx" --include="*.jsx" . --exclude-dir=node_modules; then
+            echo "Found TODO/FIXME/HACK comments. Please address them before merging."
+            exit 1
+          fi
+
+      - name: Check for console.log statements
+        run: |
+          echo "Checking for console.log statements..."
+          if grep -r "console\.log" --include="*.ts" --include="*.js" --include="*.tsx" --include="*.jsx" . --exclude-dir=node_modules; then
+            echo "Found console.log statements. Please remove them before merging."
+            exit 1
+          fi
